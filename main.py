@@ -1,8 +1,8 @@
 import pygame                   # Biblioteca para criação de jogos e animações
 import os
-import time
 from utils import map_generator, movement, search_algorithms
 from utils.components import patterned_menu, pop_up
+from utils.benchmark import comparar_algoritmos
 
 # Inicializa os módulos do pygame
 pygame.init()
@@ -68,54 +68,6 @@ def animate_path(terrain_map, objects_map, path, screen, draw_func, imgs, delay=
         pygame.time.wait(int(delay * 1000))
 
     return True
-
-# Função que compara o desempenho dos diferentes algoritmos de busca
-def comparar_algoritmos(terrain_map, objects_map, start, goal, search_algorithms):
-    results = []           
-    null_path = False      
-
-    # Lista com os nomes e funções dos algoritmos a serem comparados
-    algs = [
-        ('DFS', search_algorithms.depth_first_search),      # Busca em profundidade
-        ('BFS', search_algorithms.breadth_first_search),    # Busca em largura
-        ('GS',  search_algorithms.greedy_search),           # Busca gulosa
-        ('A*',  search_algorithms.a_star_search)            # A*
-    ]
-
-    # Executa todos os algoritmos
-    for name, func in algs:
-
-        # Faz uma cópia do mapa de objetos
-        objs_copy = [row.copy() for row in objects_map]   
-
-        # Marca o tempo inicial da execução  
-        begin = time.perf_counter()   
-
-        # Executa o algoritmo de busca                      
-        res = func(terrain_map, objs_copy, start, goal)  
-
-        # Marca o tempo final   
-        end = time.perf_counter()                  
-
-        # Calcula duração da execução        
-        duration = end - begin        
-
-        # Verifica se o resultado foi nulo ou inválido
-        if res is None or (isinstance(res, tuple) and (res[0] is None or len(res) == 0)):
-            null_path = True
-        else:
-            # Desempacota os valores retornados
-            path, cost, treasures, nodes_expanded = res
-
-            # Salva resultado formatado na lista
-            results.append(f"{name}: Custo: {cost:.1f}, {duration:.4f}seg, Nós: {nodes_expanded}")
-
-    # Retorna mensagem adequada caso nenhum caminho seja encontrado
-    if null_path:
-        return "Nenhum caminho disponível"
-    else:
-        return "\n".join(results)
-
 
 def main():
     # Gera os mapas de terreno e de objetos
@@ -210,7 +162,7 @@ def main():
 
                 # Botão: Comparar Algoritmos
                 elif clicked == 'Comparar':
-                    mensagem = comparar_algoritmos(terrain_map, objects_map, (x, y), (7, 7), search_algorithms)
+                    mensagem = comparar_algoritmos(terrain_map, objects_map, (x, y), (7, 7))
                     popup_message.show(mensagem)
 
                 # Controle manual do agente com as setas do teclado
