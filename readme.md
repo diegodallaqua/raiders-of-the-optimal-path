@@ -30,6 +30,7 @@ This project was developed as part of the Artificial Intelligence Fundamentals c
 │   ├── 📁 components
 │   │   ├── 🐍 patterned_menu.py
 │   │   └── 🐍 pop_up.py
+│   ├── 🐍 benchmark.py
 │   ├── 🐍 map_generator.py
 │   ├── 🐍 movement.py
 │   └── 🐍 search_algorithms.py
