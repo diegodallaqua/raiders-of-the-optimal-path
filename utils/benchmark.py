@@ -37,9 +37,9 @@ def comparar_algoritmos(terrain_map, objects_map, start, goal):
             null_path = True
         else:
             path, cost, treasures, nodes_expanded = res
-            results.append(f"{name}: Custo: {cost:.1f}, {duration:.4f}seg, Nós: {nodes_expanded}")
+            results.append(f"{name}: Cost: {cost:.0f}, Nodes Expanded: {nodes_expanded}")
 
     # Retorna uma mensagem caso nenhum caminho seja encontrado
     if null_path:
-        return "Nenhum caminho disponível"
+        return "Path Inexistent"
     return "\n".join(results)

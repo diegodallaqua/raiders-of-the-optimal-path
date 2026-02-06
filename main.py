@@ -7,6 +7,7 @@ from utils.benchmark import comparar_algoritmos
 # Inicializa os módulos do pygame
 pygame.init()
 
+
 # ---CONFIGURAÇÕES INICIAIS DA TELA---
 GAME_WIDTH, HEIGHT = 800, 800
 MENU_WIDTH = 200
@@ -70,6 +71,11 @@ def animate_path(terrain_map, objects_map, path, screen, draw_func, imgs, delay=
     return True
 
 def main():
+
+    # Variáveis de controle de custo
+    manual_cost = 0
+    manual_treasures = 0
+
     # Gera os mapas de terreno e de objetos
     terrain_map, objects_map = map_generator.generate_maps()
 
@@ -101,7 +107,7 @@ def main():
                 clicked = menu.handle_event(event)
 
                 # Botão: Busca em Profundidade
-                if clicked == 'Profundidade':
+                if clicked == 'Depth First':
                     path, cost, treasures, nodes_expanded = search_algorithms.depth_first_search(
                         terrain_map, objects_map, (x,y), (7,7))
                     if path:
@@ -113,10 +119,10 @@ def main():
                         final_cost      = cost
                         final_treasures = len(treasures)
                     else:
-                        popup_message.show("Nenhum caminho disponível")
+                        popup_message.show("Path Inexistent")
 
                 # Botão: Busca em Largura
-                elif clicked == 'Largura':
+                elif clicked == 'Breadth First':
                     path, cost, treasures, nodes_expanded = search_algorithms.breadth_first_search(
                         terrain_map, objects_map, (x,y), (7,7))
                     if path:
@@ -128,10 +134,10 @@ def main():
                         final_cost      = cost
                         final_treasures = len(treasures)
                     else:
-                        popup_message.show("Nenhum caminho disponível")
+                        popup_message.show("Path Inexistent")
 
                 # Botão: Busca Gulosa
-                elif clicked == 'Gulosa':
+                elif clicked == 'Greedy':
                     path, cost, treasures, nodes_expanded = search_algorithms.greedy_search(
                         terrain_map, objects_map, (x,y), (7,7))
                     if path:
@@ -143,10 +149,10 @@ def main():
                         final_cost      = 0
                         final_treasures = len(treasures)
                     else:
-                        popup_message.show("Nenhum caminho disponível")
+                        popup_message.show("Path Inexistent")
 
                 # Botão: A*
-                elif clicked == 'A Estrela':
+                elif clicked == 'A Star':
                     path, cost, treasures, nodes_expanded = search_algorithms.a_star_search(
                         terrain_map, objects_map, (x,y), (7,7))
                     if path:
@@ -158,10 +164,10 @@ def main():
                         final_cost      = cost
                         final_treasures = len(treasures)
                     else:
-                        popup_message.show("Nenhum caminho disponível")
+                        popup_message.show("Path Inexistent")
 
                 # Botão: Comparar Algoritmos
-                elif clicked == 'Comparar':
+                elif clicked == 'Compare':
                     mensagem = comparar_algoritmos(terrain_map, objects_map, (x, y), (7, 7))
                     popup_message.show(mensagem)
 
@@ -173,12 +179,24 @@ def main():
                     elif event.key == pygame.K_LEFT:  dir = 'left'
                     elif event.key == pygame.K_RIGHT: dir = 'right'
                     if dir:
-                        x, y, over = movement.move_agent(
-                            terrain_map, objects_map, x, y, dir)
+                        old_x, old_y = x, y
+
+                        x, y, over, target_object = movement.move_agent(
+                            terrain_map, objects_map, x, y, dir
+                        )
+
+                        # Só soma custo/tesouro se realmente mudou de célula
+                        if (x, y) != (old_x, old_y):
+                            manual_cost += search_algorithms.terrain_cost[terrain_map[x][y]]
+
+                            if target_object == 'T':
+                                manual_treasures += 1
+
+                        # Se encontrou a arca, finaliza com os valores acumulados
                         if over:
                             game_finished   = True
-                            final_cost      = 0
-                            final_treasures = 0
+                            final_cost      = manual_cost
+                            final_treasures = manual_treasures
 
         # Limpa a tela
         screen.fill((255,255,255))
@@ -196,7 +214,7 @@ def main():
 
         # Pop Up de jogo concluído
         if game_finished:
-            popup_message.show("Parabéns, você encontrou a arca!")
+            popup_message.show("You have found the Lost Ark...\nFortune and glory!")
 
             # Posição e tamanho dos retângulos de resultado
             btn_height = 50
@@ -215,8 +233,8 @@ def main():
             pygame.draw.rect(screen, (0, 0, 0), rect2, 2)
 
             # Renderiza texto dos resultados
-            text1 = score_font.render(f"Custo total: {final_cost}", True, (233, 214, 154))
-            text2 = score_font.render(f"Tesouros:    {final_treasures}", True, (233, 214, 154))
+            text1 = score_font.render(f"Total Cost: {final_cost}", True, (233, 214, 154))
+            text2 = score_font.render(f"Treasures: {final_treasures}", True, (233, 214, 154))
             screen.blit(text1, text1.get_rect(center=rect1.center))
             screen.blit(text2, text2.get_rect(center=rect2.center))
 

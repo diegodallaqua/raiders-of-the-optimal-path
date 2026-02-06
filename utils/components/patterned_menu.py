@@ -30,7 +30,7 @@ class Menu:
         btn_margin = 15
         
         # Nomes correspondentes às ações de busca e comparação
-        button_names = ['Profundidade', 'Largura', 'Gulosa', 'A Estrela', 'Comparar']
+        button_names = ['Depth First', 'Breadth First', 'Greedy', 'A Star', 'Compare']
         
         # Cria retângulos e associa cada nome a um botão
         for i, name in enumerate(button_names):

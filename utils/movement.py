@@ -21,7 +21,6 @@ def can_move(terrain_map, x, y):
 
 # Move o Dr. Jones na direção especificada ('up', 'down', 'left', 'right') se a célula de destino for válida.
 def move_agent(terrain_map, objects_map, x, y, direction):
-    # Define deslocamento com base na direção
     dx, dy = 0, 0
     if direction == 'up':
         dx = -1
@@ -35,20 +34,20 @@ def move_agent(terrain_map, objects_map, x, y, direction):
     new_x, new_y = x + dx, y + dy
     rows, cols = len(terrain_map), len(terrain_map[0])
 
-    # Verifica se o movimento está dentro dos limites e não esbarra em parede
-    if 0 <= new_x < rows and 0 <= new_y < cols and terrain_map[new_x][new_y] != 'W':
-        # Se a célula de destino tem a arca perdida, finaliza o jogo
-        if objects_map[new_x][new_y] == 'X':
-            # Atualiza posição do agente
-            objects_map[x][y] = None
-            objects_map[new_x][new_y] = 'J'
-            return new_x, new_y, True
+    # Movimento inválido
+    if not (0 <= new_x < rows and 0 <= new_y < cols):
+        return x, y, False, None
 
-        # Movimento normal: verifica se não está na própria posição do Dr. Jones
-        if objects_map[new_x][new_y] != 'J':
-            objects_map[x][y] = None
-            objects_map[new_x][new_y] = 'J'
-            return new_x, new_y, False
+    if terrain_map[new_x][new_y] == 'W':
+        return x, y, False, None
 
-    # Movimento inválido ou sem mudança: mantém posição atual
-    return x, y, False
+    target_object = objects_map[new_x][new_y]
+
+    # Atualiza posição do agente
+    objects_map[x][y] = None
+    objects_map[new_x][new_y] = 'J'
+
+    # Verifica se encontrou a arca
+    finished = (target_object == 'X')
+
+    return new_x, new_y, finished, target_object
