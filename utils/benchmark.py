@@ -20,13 +20,13 @@ def comparar_algoritmos(terrain_map, objects_map, start, goal):
         # Faz uma cópia do mapa de objetos
         objs_copy = [row.copy() for row in objects_map]
 
-        # Marca o tempo inicial da execução  
+        # Marca o tempo inicial da execução
         begin = time.perf_counter()
 
-        # Executa o algoritmo de busca   
+        # Executa o algoritmo de busca
         res = func(terrain_map, objs_copy, start, goal)
 
-        # Marca o tempo final   
+        # Marca o tempo final
         end = time.perf_counter()
 
         # Calcula duração da execução
@@ -37,9 +37,19 @@ def comparar_algoritmos(terrain_map, objects_map, start, goal):
             null_path = True
         else:
             path, cost, treasures, nodes_expanded = res
-            results.append(f"{name}: Cost: {cost:.0f}, Nodes Expanded: {nodes_expanded}")
+
+            # 🔹 Ajuste principal aqui
+            if cost == 0:
+                results.append(
+                    f"{name} - Nodes Expanded: {nodes_expanded}"
+                )
+            else:
+                results.append(
+                    f"{name} - Cost: {cost:.0f}, Nodes Expanded: {nodes_expanded}"
+                )
 
     # Retorna uma mensagem caso nenhum caminho seja encontrado
     if null_path:
         return "Path Inexistent"
+
     return "\n".join(results)

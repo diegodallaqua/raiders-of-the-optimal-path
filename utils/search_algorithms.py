@@ -191,5 +191,5 @@ def greedy_search(terrain_map, objects_map, start, goal):
                 h = manhattan_distance((nx, ny), goal)
                 heapq.heappush(open_set, (h, (nx, ny), path + [(nx, ny)], treasures))
 
-    # Retorna custo -1 pois não é calculado especificamente
-    return best_path, -1, treasures, nodes_expanded
+    # Retorna custo 0 pois não é calculado especificamente
+    return best_path, 0, treasures, nodes_expanded
