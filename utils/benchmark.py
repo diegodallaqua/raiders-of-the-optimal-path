@@ -45,7 +45,7 @@ def comparar_algoritmos(terrain_map, objects_map, start, goal):
                 )
             else:
                 results.append(
-                    f"{name} - Cost: {cost:.0f}, Nodes Expanded: {nodes_expanded}"
+                    f"{name} - Cost: {cost:.0f}, {nodes_expanded} Nodes Expanded "
                 )
 
     # Retorna uma mensagem caso nenhum caminho seja encontrado
